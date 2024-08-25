@@ -1,0 +1,32 @@
+filebeat.inputs:
+  - type: container
+    paths:
+#      /var/lib/docker/containers/docker_container_id/*.log
+      - '/var/lib/docker/containers/de9d72ea2090a021656e2abcdcca4e59ace16d98925daa56afc7ca77158b7b45/*.log'
+
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+
+processors:
+  - add_docker_metadata: ~
+
+
+setup.kibana:
+  host: ${KIBANA_HOSTS}
+  username: ${ELASTIC_USER}
+  password: ${ELASTIC_PASSWORD}
+
+output.logstash:
+  hosts: ["logstash01:5044"]
+
+#//for streaming
+#output.elasticsearch:
+#  hosts: ${ELASTIC_HOSTS}
+#  username: ${ELASTIC_USER}
+#  password: ${ELASTIC_PASSWORD}
+#  ssl.enabled: true
+#  ssl.certificate_authorities: "certs/ca/ca.crt"

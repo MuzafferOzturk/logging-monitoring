@@ -1,0 +1,43 @@
+<configuration>
+	<springProfile name="local">
+		<property name="LOG_DIR" value="./images/elastic/logstash_ingest_data" />
+		<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+			<file>${LOG_DIR}/tests2.log</file>
+			<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+				<providers>
+					<pattern>
+						<pattern>
+							{
+							"requestId":"%X{requestId}",
+							"requestDate":"%X{requestDate}",
+							"level": "%level",
+							"message": "%message",
+							"exception": "%ex{full}"
+							}
+						</pattern>
+					</pattern>
+				</providers>
+			</encoder>
+		</appender>
+		<logger name="com.example" level="DEBUG" />
+		<root level="INFO">
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+
+	<springProfile name="docker">
+		<appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+				<includeMdc>true</includeMdc>
+				<pattern>
+					{"requestId":"%X{requestId}","requestDate":"%X{requestDate}"}
+				</pattern>
+			</encoder>
+		</appender>
+		<logger name="com.example" level="DEBUG" />
+		<root level="INFO">
+			<appender-ref ref="JSON_CONSOLE" />
+		</root>
+	</springProfile>
+
+</configuration>
